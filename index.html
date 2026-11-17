@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Target ↔ Reference Video Showcase</title>
+<script>
+  (function(){
+    try {
+      if (localStorage.getItem('showcase_theme') === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    } catch(e) {}
+  })();
+</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="ambient-bg" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">
+        <span class="dot-target"></span>
+        <span class="dot-link"></span>
+        <span class="dot-ref"></span>
+      </div>
+      <div>
+        <h1>Target ↔ Reference Video Showcase</h1>
+        <p class="subtitle" id="statsLine">Loading showcase…</p>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <div class="filter-pills" id="filterPills" role="tablist" aria-label="Sample Filter">
+        <button class="pill-btn active" data-filter="all" onclick="setFilter('all')">All <span class="cnt" id="cnt-all">50</span></button>
+        <button class="pill-btn" data-filter="multi" onclick="setFilter('multi')">Multi-Ref <span class="cnt" id="cnt-multi">0</span></button>
+        <button class="pill-btn" data-filter="single" onclick="setFilter('single')">Single-Ref <span class="cnt" id="cnt-single">0</span></button>
+        <button class="pill-btn" data-filter="portrait" onclick="setFilter('portrait')">Portrait <span class="cnt" id="cnt-portrait">0</span></button>
+        <button class="pill-btn" data-filter="audio" onclick="setFilter('audio')">+ Audio <span class="cnt" id="cnt-audio">0</span></button>
+      </div>
+
+      <div class="right-actions">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="searchInput" type="search" placeholder="Filter #1-50 or ID…" oninput="onSearch(this.value)">
+        </div>
+        <button class="icon-btn" id="hoverBtn" onclick="toggleHoverPlay()" title="悬停视频自动静音预览">
+          <span>✨ Hover Play</span>
+        </button>
+        <button class="icon-btn" id="shuffleBtn" onclick="toggleShuffle()" title="随机打乱样本顺序">
+          <span>🎲 Shuffle</span>
+        </button>
+        <button class="icon-btn square" id="themeBtn" onclick="toggleTheme()" title="切换深色/浅色模式">☀️</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="pager-bar" id="pagerTop"></div>
+
+  <div class="col-headers" id="colHeaders">
+    <div class="col-head target-head">
+      <span class="col-dot target"></span>
+      <span class="col-title">Target Video</span>
+      <span class="col-sub">Generated / Target Clip</span>
+    </div>
+    <div class="col-head ref-head">
+      <span class="col-dot ref"></span>
+      <span class="col-title">Reference Video</span>
+      <span class="col-sub">Subject Reference Clip(s)</span>
+    </div>
+  </div>
+
+  <div class="pairs-list" id="pairsList"></div>
+
+  <div class="pager-bar bottom" id="pagerBottom"></div>
+</main>
+
+<dialog id="theater" class="theater-dlg" aria-label="Side-by-Side Comparison Theater">
+  <div class="theater-shell">
+    <div class="theater-head">
+      <div class="theater-title-wrap">
+        <span class="sample-badge big" id="thBadge">#001</span>
+        <span class="theater-meta" id="thMeta"></span>
+      </div>
+      <div class="theater-head-actions">
+        <button class="th-nav-btn" id="thPrev" onclick="stepTheater(-1)" title="上一条 (←)">← Prev</button>
+        <button class="th-nav-btn" id="thNext" onclick="stepTheater(1)" title="下一条 (→)">Next →</button>
+        <button class="th-close" onclick="closeTheater()" aria-label="关闭">×</button>
+      </div>
+    </div>
+
+    <div class="theater-stage">
+      <div class="theater-col">
+        <div class="theater-col-label"><span class="col-dot target"></span> Target Video</div>
+        <div id="thTarget" class="theater-media-wrap"></div>
+      </div>
+      <div class="theater-col">
+        <div class="theater-col-label"><span class="col-dot ref"></span> Reference Video(s)</div>
+        <div id="thRefs" class="theater-refs-grid"></div>
+      </div>
+    </div>
+
+    <div class="theater-transport">
+      <button class="primary-btn" id="thPlayBtn" onclick="toggleTheaterSync()">▶ Sync Play Both</button>
+      <button class="ghost-btn" onclick="restartTheaterSync()">↺ Restart</button>
+      <div class="audio-seg" role="group" aria-label="Audio Solo Mode">
+        <button class="seg-btn active" data-audio="all" onclick="setTheaterAudio('all')">🔊 All Audio</button>
+        <button class="seg-btn" data-audio="target" onclick="setTheaterAudio('target')">🎯 Target Audio</button>
+        <button class="seg-btn" data-audio="ref" onclick="setTheaterAudio('ref')">🎬 Ref Audio</button>
+      </div>
+      <span class="shortcut-hint">Space 播放/暂停 · ← / → 切换样本 · Esc 关闭</span>
+    </div>
+  </div>
+</dialog>
+
+<script src="data.js"></script>
+<script src="app.js" defer></script>
+</body>
+</html>
